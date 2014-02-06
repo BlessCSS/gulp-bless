@@ -5,6 +5,7 @@
     "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10",
     "main": "./index.js",
     "dependencies": {
+        "bless": "*",
         "through": "~2.3.4",
         "gulp-util": "*"
     },
