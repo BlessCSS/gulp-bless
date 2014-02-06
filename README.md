@@ -43,4 +43,4 @@ gulp.task('watch', function () {
 });
 ```
 
-**bless(fileName, options)**. `The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js).
+**bless(fileName, options)**. The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js).
