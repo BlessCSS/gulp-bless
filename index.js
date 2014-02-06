@@ -13,44 +13,54 @@ module.exports = function(fileName, options){
 
     options = options || {};
 
-    return through(function(file){
+    var cssInput = '',
+        firstFile = null;
+
+    function bufferContents(file){
         if (file.isNull()) return; // ignore
         if (file.isStream()) return this.emit('error', new PluginError(pluginName,  'Streaming not supported'));
         if (!fileName || 'string' !== typeof fileName) return this.emit('error', new PluginError(pluginName,  'fileName paramater is required!'));
 
+        if(!firstFile) firstFile = file;
+
+        cssInput += file.contents.toString('utf8');
+    }
+
+    function endStream(){
         var stream = this;
+        if(!cssInput) return stream.emit('end');
 
         new (bless.Parser)({
-            output: path.resolve(path.dirname(file.path), fileName),
+            output: path.resolve(path.dirname(firstFile.path), fileName),
             options: options
-        }).parse(file.contents.toString(), function (err, blessedFiles, numSelectors) {
-                if (err) {
-                    throw new PluginError(pluginName, err);
-                }
+        }).parse(cssInput, function (err, blessedFiles, numSelectors) {
+            if (err) {
+                throw new PluginError(pluginName, err);
+            }
 
-                // print log message
-                var msg = 'Found ' + numSelectors + ' selector';
-                if (numSelectors !== 1) {
-                    msg += 's';
-                }
-                msg += ', ';
-                if (blessedFiles.length > 1) {
-                    msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
-                } else {
-                    msg += 'not splitting.';
-                }
-                console.log(msg);
+            // print log message
+            var msg = 'Found ' + numSelectors + ' selector' + (numSelectors === 1 ? '' : 's') + ', ';
+            if (blessedFiles.length > 1) {
+                msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
+            } else {
+                msg += 'not splitting.';
+            }
+            console.log(msg);
 
-                // write processed file(s)
-                blessedFiles.forEach(function (blessedFile) {
+            // write processed file(s)
+            blessedFiles.forEach(function (blessedFile) {
 
-                    stream.emit('data', new File({
-                        cwd: file.cwd,
-                        base: file.base,
-                        path: path.resolve(blessedFile.filename),
-                        contents: new Buffer(blessedFile.content)
-                    }));
-                });
+                stream.emit('data', new File({
+                    cwd: firstFile.cwd,
+                    base: firstFile.base,
+                    path: path.resolve(blessedFile.filename),
+                    contents: new Buffer(blessedFile.content)
+                }));
             });
-    });
+
+            stream.emit('end');
+        });
+    }
+
+    return through(bufferContents, endStream);
 };

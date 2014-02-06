@@ -11,17 +11,24 @@ describe('gulp-bless', function() {
     describe('bless()', function() {
 
         it('should do nothing if under the limit', function(done){
-            var stream = bless('styles.css');
+            var stream = bless('styles.css'),
+                numberOfNewFiles = 0;
 
             stream.on('data', function(newFile){
+                numberOfNewFiles++;
+
                 should.exist(newFile);
                 should.exist(newFile.path);
                 should.exist(newFile.relative);
                 should.exist(newFile.contents);
 
                 newFile.relative.should.equal('styles.css');
-                String(newFile.contents).should.equal('p {color:red}');
+                newFile.contents.toString('utf8').should.equal('p {color:red}');
                 Buffer.isBuffer(newFile.contents).should.equal(true);
+            });
+
+            stream.on('end', function(){
+                numberOfNewFiles.should.equal(1);
                 done();
             });
 
@@ -79,8 +86,9 @@ describe('gulp-bless', function() {
                             should.exist(newFile.relative);
                             should.exist(newFile.contents);
 
-                            newFile.relative.should.equal('long-split' + (index > 0 ? '-blessed' + index : '')  + '.css');
-                            String(newFile.contents).should.equal(expectedSplits[index].contents.toString());
+                            var expectedSplitFile = expectedSplits[index];
+                            newFile.relative.should.equal(path.basename(expectedSplitFile.path));
+                            newFile.contents.toString('utf8').should.equal(expectedSplitFile.contents.toString('utf8'));
                             Buffer.isBuffer(newFile.contents).should.equal(true);
                             index--;
                         });
@@ -95,6 +103,48 @@ describe('gulp-bless', function() {
                     });
                 });
             });
+        });
+
+        it('should include every file passed (by concatenating them first)', function(done){
+            var stream = bless('styles.css');
+
+            var stylesheetA = new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("p {color:red}")
+            });
+
+            var stylesheetB = new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("li:hover {display: block;}")
+            });
+
+            var expectedCSS = stylesheetA.contents.toString('utf8') + stylesheetB.contents.toString('utf8'),
+                numberOfNewFiles = 0;
+
+            stream.on('data', function(newFile){
+                numberOfNewFiles++;
+                should.exist(newFile);
+                should.exist(newFile.path);
+                should.exist(newFile.relative);
+                should.exist(newFile.contents);
+
+                newFile.relative.should.equal('styles.css');
+                newFile.contents.toString('utf8').should.equal(expectedCSS);
+                Buffer.isBuffer(newFile.contents).should.equal(true);
+            });
+
+            stream.on('end', function(){
+                numberOfNewFiles.should.equal(1);
+                done();
+            });
+
+            stream.write(stylesheetA);
+            stream.write(stylesheetB);
+            stream.end();
         });
     });
 });
