@@ -1,8 +1,8 @@
 {
     "name": "gulp-bless",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "http://github.com/adam-lynch/gulp-bless",
-    "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10",
+    "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10. Bless + Gulp = gulp-bless.",
     "main": "./index.js",
     "dependencies": {
         "bless": "*",
@@ -26,7 +26,8 @@
         "postprocessor",
         "preprocessor",
         "split",
-        "internet explorer"
+        "internet explorer",
+        "bless"
     ],
     "author": "Adam Lynch <adam@teamwork.com>",
     "license": "MIT",
