@@ -14,8 +14,8 @@ gulp.task('test', function(){
         .pipe(mocha())
         .pipe(coverage.gather())
         .pipe(coverage.enforce({
-            statements: 85,
-            lines: 85,
-            blocks: 85
+            statements: 100,
+            lines: 100,
+            blocks: 100
         }));
 });
