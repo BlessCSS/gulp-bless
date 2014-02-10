@@ -19,7 +19,7 @@ module.exports = function(fileName, options){
     function bufferContents(file){
         if (file.isNull()) return; // ignore
         if (file.isStream()) return this.emit('error', new PluginError(pluginName,  'Streaming not supported'));
-        if (!fileName || 'string' !== typeof fileName) return this.emit('error', new PluginError(pluginName,  'fileName paramater is required!'));
+        if (!fileName || 'string' !== typeof fileName) return this.emit('error', new PluginError(pluginName,  'fileName parameter is required!'));
 
         if(!firstFile) firstFile = file;
 
@@ -28,7 +28,20 @@ module.exports = function(fileName, options){
 
     function endStream(){
         var stream = this;
-        if(!cssInput) return stream.emit('end');
+
+        if(!firstFile) return stream.emit('end'); //error thrown in bufferContents
+
+        var outputFilePath = path.resolve(path.dirname(firstFile.path), fileName);
+
+        if(!cssInput) {
+            stream.emit('data', new File({
+                cwd: firstFile.cwd,
+                base: firstFile.base,
+                path: outputFilePath,
+                contents: new Buffer('')
+            }));
+            return stream.emit('end');
+        }
 
         new (bless.Parser)({
             output: path.resolve(path.dirname(firstFile.path), fileName),

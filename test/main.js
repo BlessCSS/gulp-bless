@@ -146,5 +146,82 @@ describe('gulp-bless', function() {
             stream.write(stylesheetB);
             stream.end();
         });
+
+        it('should return empty file if empty files are passed', function(done){
+            var stream = bless('styles.css');
+
+            var stylesheetA = new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("")
+            });
+
+            var stylesheetB = new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("")
+            });
+
+            var numberOfNewFiles = 0;
+
+            stream.on('data', function(newFile){
+                numberOfNewFiles++;
+                should.exist(newFile);
+                should.exist(newFile.path);
+                should.exist(newFile.relative);
+                should.exist(newFile.contents);
+
+                newFile.relative.should.equal('styles.css');
+                newFile.contents.toString('utf8').should.equal('');
+                Buffer.isBuffer(newFile.contents).should.equal(true);
+            });
+
+            stream.on('end', function(){
+                numberOfNewFiles.should.equal(1);
+                done();
+            });
+
+            stream.write(stylesheetA);
+            stream.write(stylesheetB);
+            stream.end();
+        });
+
+        it('should throw an error if filename is not passed', function(done){
+            var stream = bless();
+
+            stream.on('error', function(err){
+                err.plugin.should.equal('gulp-bless');
+                err.message.should.equal('fileName parameter is required!');
+                done();
+            });
+
+            stream.write(new File({
+                 path: 'a',
+                 base: 'a',
+                 cwd: 'a',
+                 contents: new Buffer('a')
+             }));
+            stream.end();
+        });
+
+        it('should throw an error if stream is passed', function(done){
+            var stream = bless('styles.css');
+
+            stream.on('error', function(err){
+                err.plugin.should.equal('gulp-bless');
+                err.message.should.equal('Streaming not supported');
+                done();
+            });
+
+            stream.write(new File({
+                path: 'a',
+                base: 'a',
+                cwd: 'a',
+                contents: fs.createReadStream('./test/css/long.css')
+            }));
+            stream.end();
+        });
     });
 });

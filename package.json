@@ -1,40 +1,43 @@
 {
-    "name": "gulp-bless",
-    "version": "0.0.2",
-    "homepage": "http://github.com/adam-lynch/gulp-bless",
-    "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10. Bless + Gulp = gulp-bless.",
-    "main": "./index.js",
-    "dependencies": {
-        "bless": "*",
-        "through": "~2.3.4",
-        "gulp-util": "*"
-    },
-    "devDependencies": {
-        "mocha": "*",
-        "should": "*"
-    },
-    "scripts": {
-        "test": "mocha"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/adam-lynch/gulp-bless.git"
-    },
-    "keywords": [
-        "gulpplugin",
-        "css",
-        "postprocessor",
-        "preprocessor",
-        "split",
-        "internet explorer",
-        "bless"
-    ],
-    "author": "Adam Lynch <adam@teamwork.com>",
-    "license": "MIT",
-    "bugs": {
-        "url": "http://github.com/adam-lynch/gulp-bless/issues"
-    },
-    "engines": {
-        "node": ">=0.8"
-    }
+  "name": "gulp-bless",
+  "version": "0.0.2",
+  "homepage": "http://github.com/adam-lynch/gulp-bless",
+  "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10. Bless + Gulp = gulp-bless.",
+  "main": "./index.js",
+  "dependencies": {
+    "bless": "*",
+    "gulp-util": "*",
+    "through": "~2.3.4"
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-coverage": "*",
+    "gulp-mocha": "*",
+    "should": "*",
+    "through2": "~0.4.1"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/adam-lynch/gulp-bless.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "css",
+    "postprocessor",
+    "preprocessor",
+    "split",
+    "internet explorer",
+    "bless"
+  ],
+  "author": "Adam Lynch <adam@teamwork.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "http://github.com/adam-lynch/gulp-bless/issues"
+  },
+  "engines": {
+    "node": ">=0.8"
+  }
 }
