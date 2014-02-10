@@ -1,4 +1,4 @@
-gulp-bless v0.0.2 [![Build Status](https://travis-ci.org/adam-lynch/gulp-bless.png)](https://travis-ci.org/adam-lynch/gulp-bless)
+gulp-bless v0.0.3 [![Build Status](https://travis-ci.org/adam-lynch/gulp-bless.png)](https://travis-ci.org/adam-lynch/gulp-bless)
 ==========
 
 CSS post-processor which splits CSS files suitably for Internet Explorer &lt; 10.   
