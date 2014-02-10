@@ -5,7 +5,6 @@ var fs = require('fs');
 var path = require('path');
 var File = require('gulp-util').File;
 var Buffer = require('buffer').Buffer;
-require('mocha');
 
 describe('gulp-bless', function() {
     describe('bless()', function() {
