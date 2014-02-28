@@ -222,5 +222,49 @@ describe('gulp-bless', function() {
             }));
             stream.end();
         });
+
+        it('should not throw an error for this minimized stylesheet. See #2', function(done){
+            var stream = bless('out.min.css');
+
+            stream.on('end', function(){
+                done();
+            });
+
+
+            fs.readFile('./test/css/issue2.min.css', function(err, data){
+                if(err) throw new Error(err);
+
+                stream.write(new File({
+                    path: 'a',
+                    base: 'a',
+                    cwd: 'a',
+                    contents: new Buffer(data)
+                }));
+            });
+
+            stream.end();
+        });
+
+        it('should not throw an error for this stylesheet. See #2', function(done){
+            var stream = bless('out.css');
+
+            stream.on('end', function(){
+                done();
+            });
+
+
+            fs.readFile('./test/css/issue2.css', function(err, data){
+                if(err) throw new Error(err);
+
+                stream.write(new File({
+                    path: 'a',
+                    base: 'a',
+                    cwd: 'a',
+                    contents: new Buffer(data)
+                }));
+            });
+
+            stream.end();
+        });
     });
 });

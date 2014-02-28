@@ -1,3 +1,8 @@
 .idea
 *.iml
 node_modules
+
+.coverrun
+.coverdata
+debug
+coverage.html
