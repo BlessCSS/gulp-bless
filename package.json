@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "gulp": "*",
-    "gulp-coverage": "*",
+    "gulp-coverage": "~0.1.24",
     "gulp-mocha": "*",
     "should": "*",
     "through2": "~0.4.1"

@@ -8,75 +8,56 @@ var gutil = require('gulp-util');
 var File = gutil.File;
 var PluginError = gutil.PluginError;
 
-module.exports = function(fileName, options){
+module.exports = function(options){
     var pluginName = 'gulp-bless';
 
     options = options || {};
 
-    var cssInput = '',
-        firstFile = null;
-
-    function bufferContents(file){
+    function bufferContents(file, encoding, cb){
         if (file.isNull()) return; // ignore
         if (file.isStream()) return this.emit('error', new PluginError(pluginName,  'Streaming not supported'));
+        var stream = this;
 
-        if(!firstFile) firstFile = file;
+        if(file.contents){
+            var fileName = path.basename(file.path);
+            var outputFilePath = path.resolve(path.dirname(file.path), fileName);
+            var contents = file.contents.toString('utf8');
 
-        cssInput += file.contents.toString('utf8');
+            new (bless.Parser)({
+                output: outputFilePath,
+                options: options
+            }).parse(contents, function (err, blessedFiles, numSelectors) {
+                    if (err) {
+                        throw new PluginError(pluginName, err);
+                    }
+
+                    // print log message
+                    var msg = 'Found ' + numSelectors + ' selector' + (numSelectors === 1 ? '' : 's') + ', ';
+                    if (blessedFiles.length > 1) {
+                        msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
+                    } else {
+                        msg += 'not splitting.';
+                    }
+                    console.log(msg);
+
+                    // write processed file(s)
+                    blessedFiles.forEach(function (blessedFile) {
+                        stream.emit('data', new File({
+                            cwd: file.cwd,
+                            base: file.base,
+                            path: path.resolve(blessedFile.filename),
+                            contents: new Buffer(blessedFile.content)
+                        }));
+                    });
+                });
+        }
+        else {
+            cb(file, null);
+        }
     }
 
     function endStream(){
-        var stream = this;
-        if(!firstFile) return stream.emit('end'); //error thrown in bufferContents
-        if(fileName) {
-            console.warn(pluginName + ': Passing a fileName directly is DEPRECATED');
-        }
-        else {
-            fileName = path.basename(firstFile.path);
-        }
-
-        var outputFilePath = path.resolve(path.dirname(firstFile.path), fileName);
-
-        if(!cssInput) {
-            stream.emit('data', new File({
-                cwd: firstFile.cwd,
-                base: firstFile.base,
-                path: outputFilePath,
-                contents: new Buffer('')
-            }));
-            return stream.emit('end');
-        }
-
-        new (bless.Parser)({
-            output: path.resolve(path.dirname(firstFile.path), fileName),
-            options: options
-        }).parse(cssInput, function (err, blessedFiles, numSelectors) {
-            if (err) {
-                throw new PluginError(pluginName, err);
-            }
-
-            // print log message
-            var msg = 'Found ' + numSelectors + ' selector' + (numSelectors === 1 ? '' : 's') + ', ';
-            if (blessedFiles.length > 1) {
-                msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
-            } else {
-                msg += 'not splitting.';
-            }
-            console.log(msg);
-
-            // write processed file(s)
-            blessedFiles.forEach(function (blessedFile) {
-
-                stream.emit('data', new File({
-                    cwd: firstFile.cwd,
-                    base: firstFile.base,
-                    path: path.resolve(blessedFile.filename),
-                    contents: new Buffer(blessedFile.content)
-                }));
-            });
-
-            stream.emit('end');
-        });
+        this.emit('end');
     }
 
     return through(bufferContents, endStream);

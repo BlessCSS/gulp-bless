@@ -44,4 +44,8 @@ gulp.task('watch', function () {
 });
 ```
 
-**bless(fileName, options)**. The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js).
+**bless(options)**. The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js).
+
+## Warning: gulp-bless has changed a lot since 1.0.0
+- It no longer concatenates all files that come down the pipeline.
+- fileName can no longer be passed directly to the plugin itself.
