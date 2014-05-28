@@ -19,7 +19,6 @@ module.exports = function(fileName, options){
     function bufferContents(file){
         if (file.isNull()) return; // ignore
         if (file.isStream()) return this.emit('error', new PluginError(pluginName,  'Streaming not supported'));
-        if (!fileName || 'string' !== typeof fileName) return this.emit('error', new PluginError(pluginName,  'fileName parameter is required!'));
 
         if(!firstFile) firstFile = file;
 
@@ -28,8 +27,13 @@ module.exports = function(fileName, options){
 
     function endStream(){
         var stream = this;
-
         if(!firstFile) return stream.emit('end'); //error thrown in bufferContents
+        if(fileName) {
+            console.warn(pluginName + ': Passing a fileName directly is DEPRECATED');
+        }
+        else {
+            fileName = path.basename(firstFile.path);
+        }
 
         var outputFilePath = path.resolve(path.dirname(firstFile.path), fileName);
 

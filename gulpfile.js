@@ -11,7 +11,9 @@ gulp.task('test', function(){
             pattern: ['index.js'],
             debugDirectory: 'debug'
         }))
-        .pipe(mocha())
+        .pipe(mocha({
+            reporter: 'spec'
+        }))
         .pipe(coverage.gather())
         .pipe(coverage.enforce({
             statements: 85,

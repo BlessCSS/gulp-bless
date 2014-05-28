@@ -187,24 +187,6 @@ describe('gulp-bless', function() {
             stream.end();
         });
 
-        it('should throw an error if filename is not passed', function(done){
-            var stream = bless();
-
-            stream.on('error', function(err){
-                err.plugin.should.equal('gulp-bless');
-                err.message.should.equal('fileName parameter is required!');
-                done();
-            });
-
-            stream.write(new File({
-                 path: 'a',
-                 base: 'a',
-                 cwd: 'a',
-                 contents: new Buffer('a')
-             }));
-            stream.end();
-        });
-
         it('should throw an error if stream is passed', function(done){
             var stream = bless('styles.css');
 
@@ -219,6 +201,153 @@ describe('gulp-bless', function() {
                 base: 'a',
                 cwd: 'a',
                 contents: fs.createReadStream('./test/css/long.css')
+            }));
+            stream.end();
+        });
+
+        it("shouldn't throw error if fileName isn't passed", function(done){
+            var stream = bless();
+            var numberOfErrors = 0;
+
+            stream.on('error', function(){
+                numberOfErrors++
+            });
+
+            stream.on('end', function(){
+               numberOfErrors.should.be.equal(0);
+               done();
+            });
+
+            stream.write(new File({
+                path: 'style.css',
+                contents: new Buffer('p {color:red;}')
+            }));
+            stream.emit('end');
+        });
+
+        it("should work if filename isn't passed", function(done){
+            var stream = bless();
+
+            fs.readFile('./test/css/long.css', function(err, data){
+                if(err) throw new Error(err);
+
+                var longStylesheet = new File({
+                        cwd: "/home/adam/",
+                        base: "/home/adam/test",
+                        path: "/home/adam/test/long.css",
+                        contents: new Buffer(data)
+                    }),
+                    expectedSplits = [];
+
+                fs.readFile('./test/css/long-split.css', function(err, data){
+                    if(err) throw new Error(err);
+
+                    expectedSplits.push(new File({
+                        cwd: "/home/adam/",
+                        base: "/home/adam/test",
+                        path: "/home/adam/test/long.css",
+                        contents: new Buffer(data)
+                    }));
+
+                    fs.readFile('./test/css/long-split-blessed1.css', function(err, data){
+                        if(err) throw new Error(err);
+
+                        expectedSplits.push(new File({
+                            cwd: "/home/adam/",
+                            base: "/home/adam/test",
+                            path: "/home/adam/test/long-blessed1.css",
+                            contents: new Buffer(data)
+                        }));
+
+                        var index = expectedSplits.length - 1,
+                            numberOfNewFiles = 0;
+
+                        stream.on('data', function(newFile){
+                            numberOfNewFiles++;
+
+                            should.exist(newFile);
+                            should.exist(newFile.path);
+                            should.exist(newFile.relative);
+                            should.exist(newFile.contents);
+
+                            var expectedSplitFile = expectedSplits[index];
+                            newFile.relative.should.equal(path.basename(expectedSplitFile.path));
+                            newFile.contents.toString('utf8').should.equal(expectedSplitFile.contents.toString('utf8'));
+                            Buffer.isBuffer(newFile.contents).should.equal(true);
+                            index--;
+                        });
+
+                        stream.on('end', function(){
+                            numberOfNewFiles.should.equal(2);
+                            done();
+                        });
+
+                        stream.write(longStylesheet);
+                        stream.end();
+                    });
+                });
+            });
+        });
+
+
+        it("should work if no filename is passed and file from pipeline doesn't end with .css", function(done){
+            var stream = bless();
+            var fileContents = 'p {color:red}';
+            var numberOfFiles = 0;
+            var numberOfErrrors = 0;
+
+            stream.on('error', function(){
+                numberOfErrrors++;
+            });
+
+            stream.on('data', function(file){
+                file.contents.toString().should.be.equal(fileContents);
+                path.basename(file.path).should.be.equal('style.xml');
+                numberOfFiles++;
+            });
+
+            stream.on('end', function(){
+                numberOfErrrors.should.be.equal(0);
+                numberOfFiles.should.be.equal(1);
+                done();
+            });
+
+            stream.write(new File({
+                base: '/test/',
+                cwd: '/test/a/',
+                path: '/test/a/style.xml',
+                contents: new Buffer(fileContents)
+            }));
+            stream.end();
+        });
+
+        it("should work if no filename is passed and file from pipeline doesn't contain an extension", function(done){
+            var stream = bless();
+            var fileContents = 'p {color:red}';
+            var numberOfFiles = 0;
+            var numberOfErrrors = 0;
+
+            stream.on('error', function(){
+                numberOfErrrors++;
+            });
+
+            stream.on('data', function(file){
+                file.contents.toString().should.be.equal(fileContents);
+                path.basename(file.path).should.be.equal('style');
+                numberOfFiles++;
+            });
+
+            stream.on('end', function(){
+                numberOfErrrors.should.be.equal(0);
+                numberOfFiles.should.be.equal(1);
+                done();
+            });
+
+            stream.write(new File({
+                base: '/test/',
+                cwd: '/test/a/',
+                path: '/test/a/style',
+                contents: new Buffer(fileContents)
             }));
             stream.end();
         });

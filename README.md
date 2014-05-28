@@ -16,7 +16,7 @@ This is the a [Gulp](http://github.com/gulpjs/gulp) wrapper around [bless.js](ht
 </tr>
 <tr>
 <td>Node Version</td>
-<td>>= 0.4</td>
+<td>>= 0.9</td>
 </tr>
 </table>
 
@@ -31,7 +31,8 @@ var gulp = require('gulp');
 var bless = require('gulp-bless');
 
 gulp.task('css', function() {
-    gulp.src(bless('chunks.css'))
+    gulp.src('style.css')
+        .pipe(bless())
         .pipe(gulp.dest('./splitCSS'));
 });
 
