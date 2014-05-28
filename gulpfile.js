@@ -14,23 +14,10 @@ gulp.task('test', function(){
         .pipe(mocha({
             reporter: 'spec'
         }))
-        //.pipe(coverage.gather())
-        .pipe(coverage.report({outFile:'coverage.html'}));
-        /*.pipe(coverage.enforce({
+        .pipe(coverage.gather())
+        .pipe(coverage.enforce({
             statements: 85,
             lines: 85,
-            blocks: 85
-        }));*/
-});
-
-gulp.task('a', function(){
-    var bless = require('./');
-    var rename = require('gulp-rename');
-    gulp.src([
-            './a.css',
-            './test/css/long.css',
-            './test/css/long-split.css'
-        ])
-        .pipe(bless())
-        .pipe(gulp.dest('./a/'));
+            blocks: 75
+        }));
 });
