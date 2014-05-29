@@ -1,4 +1,4 @@
-gulp-bless[![Build Status](https://travis-ci.org/adam-lynch/gulp-bless.png)](https://travis-ci.org/adam-lynch/gulp-bless)
+gulp-bless [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] 
 ==========
 
 CSS post-processor which splits CSS files suitably for Internet Explorer &lt; 10.   
@@ -60,3 +60,14 @@ gulp.src('long.css')
 ## Warning: gulp-bless has changed a lot since 1.0.0
 - It no longer concatenates all files that come down the pipeline.
 - fileName can no longer be passed directly to the plugin itself.
+
+
+
+[npm-url]: https://npmjs.org/package/gulp-bless
+[npm-image]: https://badge.fury.io/js/gulp-bless.png
+
+[travis-url]: http://travis-ci.org/adam-lynch/gulp-bless
+[travis-image]: https://secure.travis-ci.org/adam-lynch/gulp-bless.png?branch=master
+
+[depstat-url]: https://david-dm.org/adam-lynch/gulp-bless
+[depstat-image]: https://david-dm.org/adam-lynch/gulp-bless.png
