@@ -64,7 +64,7 @@ gulp.src('long.css')
 
 
 [npm-url]: https://npmjs.org/package/gulp-bless
-[npm-image]: http://img.shields.io/npm/adam-lynch/gulp-bless.svg?style=flat
+[npm-image]: https://badge.fury.io/js/gulp-bless.png
 
 [travis-url]: http://travis-ci.org/adam-lynch/gulp-bless
 [travis-image]: http://img.shields.io/travis/adam-lynch/gulp-bless.svg?style=flat
