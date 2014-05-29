@@ -45,6 +45,7 @@ gulp.task('watch', function () {
 ```
 
 **bless(options)**. The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js).
+
 Bless' options are listed here: [paulyoung/bless.js/blob/master/bin/blessc#L10](https://github.com/paulyoung/bless.js/blob/master/bin/blessc#L10).
 For example, if you wanted the first CSS chunk / "blessed" file to `@import` the others, then do this:
 
