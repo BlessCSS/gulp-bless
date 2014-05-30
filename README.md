@@ -68,7 +68,6 @@ If you can't create separate sourcemap files — such as if you are using ~v
 - fileName can no longer be passed directly to the plugin itself.
 
 
-
 [npm-url]: https://npmjs.org/package/gulp-bless
 [npm-image]: https://badge.fury.io/js/gulp-bless.png
 
