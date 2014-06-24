@@ -40,6 +40,30 @@ describe('gulp-bless', function() {
             stream.end();
         });
 
+        it("should do pass through a file if it's empty", function(done){
+            var stream = bless(),
+                numberOfNewFiles = 0;
+
+            stream.on('data', function(newFile){
+                numberOfNewFiles++;
+                newFile.contents.toString('utf8').should.equal('');
+                Buffer.isBuffer(newFile.contents).should.equal(true);
+            });
+
+            stream.on('end', function(){
+                numberOfNewFiles.should.equal(1);
+                done();
+            });
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/empty.css",
+                contents: new Buffer("")
+            }));
+            stream.end();
+        });
+
         it('should split when selector count is over the limit', function(done){
             var stream = bless();
 

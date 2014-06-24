@@ -14,6 +14,11 @@ gulp.task('test', function(){
         .pipe(mocha({
             reporter: 'spec'
         }))
+        /*
+        // uncomment and comment out other coverage.* pipes to get coverage HTML report
+        .pipe(coverage.report({
+            outFile: 'coverage.html'
+        }))*/
         .pipe(coverage.gather())
         .pipe(coverage.enforce({
             statements: 85,
