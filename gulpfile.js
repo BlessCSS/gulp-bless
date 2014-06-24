@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var coverage = require('gulp-coverage');
-var through2 = require('through2');
 
 gulp.task('default', ['test']);
 
