@@ -273,11 +273,11 @@ describe('gulp-bless', function() {
             stream.on('data', function(file){
                 if(numberOfFiles){
                     file.contents.toString().should.be.equal(fileB.contents.toString());
-                    file.path.should.be.equal(fileB.path);
+                    file.path.should.be.equal(path.resolve(fileB.path));
                 }
                 else {
                     file.contents.toString().should.be.equal(fileA.contents.toString());
-                    file.path.should.be.equal(fileA.path);
+                    file.path.should.be.equal(path.resolve(fileA.path));
                 }
                 numberOfFiles++;
             });
