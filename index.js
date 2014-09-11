@@ -38,7 +38,7 @@ module.exports = function(options){
                     } else {
                         msg += 'not splitting.';
                     }
-                    console.log(msg);
+                    gutil.log(msg);
 
                     // write processed file(s)
                     blessedFiles.forEach(function (blessedFile) {
