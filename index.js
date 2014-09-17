@@ -31,14 +31,14 @@ module.exports = function(options){
                         return cb(new PluginError(pluginName,  err));
                     }
 
-                    // print log message
-                    var msg = 'Found ' + numSelectors + ' selector' + (numSelectors === 1 ? '' : 's') + ', ';
-                    if (blessedFiles.length > 1) {
-                        msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
-                    } else {
-                        msg += 'not splitting.';
-                    }
                     if (options.log) {
+                        // print log message
+                        var msg = 'Found ' + numSelectors + ' selector' + (numSelectors === 1 ? '' : 's') + ', ';
+                        if (blessedFiles.length > 1) {
+                            msg += 'splitting into ' + blessedFiles.length + ' blessedFiles.';
+                        } else {
+                            msg += 'not splitting.';
+                        }
                         gutil.log(msg);
                     }
 
