@@ -1,7 +1,7 @@
-gulp-bless [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] 
+gulp-bless [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 ==========
 
-Gulp plugin which splits CSS files suitably for Internet Explorer &lt; 10.   
+Gulp plugin which splits CSS files suitably for Internet Explorer &lt; 10.
 
 This is the a [Gulp](http://github.com/gulpjs/gulp) wrapper around [bless.js](https://github.com/paulyoung/bless.js) (see [blesscss.com](http://blesscss.com/)).
 
@@ -58,8 +58,10 @@ gulp.src('long.css')
         .pipe(gulp.dest('./'))
 ```
 
+You can also include a `log` property to control whether Gulp should log output.
+
 ##### A note about sourcemaps:
-If you're using a CSS pre-processor which creates inline sourcemaps [bless.js](https://github.com/paulyoung/bless.js) will take a very long time to run. It's recommended that you don't pass files containing inline sourcemaps to `gulp-bless`. If you do want to use sourcemaps then create them as a separate `.map` file. 
+If you're using a CSS pre-processor which creates inline sourcemaps [bless.js](https://github.com/paulyoung/bless.js) will take a very long time to run. It's recommended that you don't pass files containing inline sourcemaps to `gulp-bless`. If you do want to use sourcemaps then create them as a separate `.map` file.
 
 If you can't create separate sourcemap files — such as if you are using ~v0.7 of [gulp-sass](https://www.npmjs.org/package/gulp-sass) which uses `libsass` — consider creating a minified version of your CSS (using something like [gulp-minify-css](https://www.npmjs.org/package/gulp-minify-css)) which strips out the inline sourcemap and running `gulp-bless` on that, then include that file in production whilst still including your development version with its inline sourcemap when developing locally.
 
