@@ -38,7 +38,7 @@ module.exports = function(options){
                     } else {
                         msg += 'not splitting.';
                     }
-                    if (options.log === true) {
+                    if (options.log) {
                         gutil.log(msg);
                     }
 
