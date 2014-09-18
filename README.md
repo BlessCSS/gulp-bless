@@ -44,19 +44,21 @@ gulp.task('watch', function () {
 });
 ```
 
-**bless(options)**. The (optional) `options` argument is passed on as is to [bless.js](https://github.com/paulyoung/bless.js). You can also include a `log` option to control whether Gulp should log output which defaults to `false` (this isn't passed to `bless.js`).
+**bless(options)**. The (optional) `options` argument is passed on to [bless.js](https://github.com/paulyoung/bless.js). You can also include a `log` option to control whether Gulp should log output which defaults to `false` (this isn't passed to `bless.js`).
 
 Bless' options are listed here: [paulyoung/bless.js/blob/master/bin/blessc#L10](https://github.com/paulyoung/bless.js/blob/master/bin/blessc#L10).
-For example, if you wanted the first CSS chunk / "blessed" file to `@import` the others, then do this:
+For example, if you didn't want the first CSS chunk / "blessed" file to `@import` the others, then you'd do this:
 
 
 ```javascript
 gulp.src('long.css')
         .pipe(bless({
-            imports: true
+            imports: false
         }))
         .pipe(gulp.dest('./'))
 ```
+
+Note: Breaking change as of `3.0.0`; the `options` did not fallback to the [bless.js' defaults](https://github.com/paulyoung/bless.js/blob/master/bin/blessc#L10) when missing, but do now.
 
 ##### A note about sourcemaps:
 If you're using a CSS pre-processor which creates inline sourcemaps [bless.js](https://github.com/paulyoung/bless.js) will take a very long time to run. It's recommended that you don't pass files containing inline sourcemaps to `gulp-bless`. If you do want to use sourcemaps then create them as a separate `.map` file.
