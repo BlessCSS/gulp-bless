@@ -4,13 +4,21 @@ var through = require('through2');
 var path = require('path');
 var bless = require('bless');
 var gutil = require('gulp-util');
+var merge = require('merge');
 var File = gutil.File;
 var PluginError = gutil.PluginError;
 
 module.exports = function(options){
     var pluginName = 'gulp-bless';
+    var defaults = {
+        cacheBuster: true,
+        cleanup: true,
+        compress: false,
+        force: false,
+        imports: true
+    };
 
-    options = options || {};
+    options = merge(true, defaults, options);
 
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) return cb(null, file); // ignore
@@ -22,6 +30,8 @@ module.exports = function(options){
             var fileName = path.basename(file.path);
             var outputFilePath = path.resolve(path.dirname(file.path), fileName);
             var contents = file.contents.toString('utf8');
+            var blessOpts = options;
+            if(blessOpts.log) delete blessOpts.log
 
             new (bless.Parser)({
                 output: outputFilePath,

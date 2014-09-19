@@ -7,13 +7,15 @@
   "dependencies": {
     "bless": "~3.0.3",
     "gulp-util": "*",
-    "through2": "~0.5.1"
+    "through2": "~0.5.1",
+    "merge": "~1.2.0"
   },
   "devDependencies": {
     "gulp": "*",
     "gulp-coverage": "~0.1.24",
     "gulp-mocha": "*",
-    "should": "*"
+    "should": "*",
+    "proxyquire": "~1.0.1"
   },
   "scripts": {
     "test": "gulp test"

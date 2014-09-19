@@ -1,3 +1,5 @@
+var mockrequire = require('proxyquire');
+
 var bless = require('../');
 var should = require('should');
 var fs = require('fs');
@@ -7,6 +9,103 @@ var Buffer = require('buffer').Buffer;
 
 describe('gulp-bless', function() {
     describe('bless()', function() {
+
+        it("should use bless.js' defaults when options aren't passed", function(done){
+            var gulpBless = mockrequire('../index', {
+                bless: {
+                    Parser: function(args){
+                        var options = args.options;
+
+                        options.should.be.type('object');
+                        options.should.have.property('cacheBuster', true);
+                        options.should.have.property('cleanup', true);
+                        options.should.have.property('compress', false);
+                        options.should.have.property('force', false);
+                        options.should.have.property('imports', true);
+
+                        done();
+                        var originalBless = require('bless');
+                        return new originalBless.Parser(args);
+                    }
+                }
+            });
+
+            var stream = gulpBless();
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("non-empty")
+            }));
+
+            stream.end();
+        });
+
+        it("should use some bless.js' defaults when some options are missing", function(done){
+            var gulpBless = mockrequire('../index', {
+                bless: {
+                    Parser: function(args){
+                        var options = args.options;
+
+                        options.should.be.type('object');
+                        options.should.have.property('cacheBuster', false);
+                        options.should.have.property('cleanup', true);
+                        options.should.have.property('compress', false);
+                        options.should.have.property('force', false);
+                        options.should.have.property('imports', true);
+                        options.should.not.have.property('log');
+
+                        done();
+                        var originalBless = require('bless');
+                        return new originalBless.Parser(args);
+                    }
+                }
+            });
+
+            var stream = gulpBless({
+                cacheBuster: false
+            });
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("non-empty")
+            }));
+
+            stream.end();
+        });
+
+        it("shouldn't pass log option to bless", function(done){
+            var gulpBless = mockrequire('../index', {
+                bless: {
+                    Parser: function(args){
+                        var options = args.options;
+
+                        options.should.be.type('object');
+                        options.should.not.have.property('log');
+
+                        done();
+                        var originalBless = require('bless');
+                        return new originalBless.Parser(args);
+                    }
+                }
+            });
+
+            var stream = gulpBless({
+                log: true
+            });
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("non-empty")
+            }));
+
+            stream.end();
+        });
 
         it('should do nothing if under the limit', function(done){
             var stream = bless(),
@@ -110,7 +209,9 @@ describe('gulp-bless', function() {
 
                             var expectedSplitFile = expectedSplits[index];
                             newFile.relative.should.equal(path.basename(expectedSplitFile.path));
-                            newFile.contents.toString('utf8').should.equal(expectedSplitFile.contents.toString('utf8'));
+
+                            var contents = newFile.contents.toString('utf8').replace(/\?z=.*?'\)/g, "?z=xxx')");
+                            contents.should.equal(expectedSplitFile.contents.toString('utf8'));
                             Buffer.isBuffer(newFile.contents).should.equal(true);
                             index--;
                         });
