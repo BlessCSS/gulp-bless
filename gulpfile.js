@@ -20,8 +20,8 @@ gulp.task('test', function(){
         }))*/
         .pipe(coverage.gather())
         .pipe(coverage.enforce({
-            statements: 60,
-            lines: 60,
-            blocks: 60
+            statements: 85,
+            lines: 85,
+            blocks: 75
         }));
 });

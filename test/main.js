@@ -416,5 +416,55 @@ describe('gulp-bless', function() {
             stream.write(fileB);
             stream.end();
         });
+
+        it("should log using gulp-util when option is enabled", function(done){
+            var gulpBless = mockrequire('../index', {
+                'gulp-util': {
+                    log: function(text){
+                        text.should.equal('Found 0 selectors, not splitting.');
+                        done();
+                    }
+                }
+            });
+
+            var stream = gulpBless({
+                log: true
+            });
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("non-empty")
+            }));
+
+            stream.end();
+        });
+
+        it("should not log using gulp-util when option isn't true", function(done) {
+            var gulpBless = mockrequire('../index', {
+                'gulp-util': {
+                    log: function (text) {
+                        should.fail(null, null, "gulp-util.log shouldn't have been called");
+                    }
+                }
+            });
+
+            var stream = gulpBless();
+
+            stream.on('data', function(){});
+            stream.on('end', function(){
+                done();
+            });
+
+            stream.write(new File({
+                cwd: "/home/adam/",
+                base: "/home/adam/test",
+                path: "/home/adam/test/file.css",
+                contents: new Buffer("non-empty")
+            }));
+
+            stream.end();
+        });
     });
 });

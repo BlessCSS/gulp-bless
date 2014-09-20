@@ -30,12 +30,12 @@ module.exports = function(options){
             var fileName = path.basename(file.path);
             var outputFilePath = path.resolve(path.dirname(file.path), fileName);
             var contents = file.contents.toString('utf8');
-            var blessOpts = options;
-            if(blessOpts.log) delete blessOpts.log
+            var blessOpts = merge(true, options);
+            if(typeof blessOpts.log !== 'undefined') delete blessOpts.log
 
             new (bless.Parser)({
                 output: outputFilePath,
-                options: options
+                options: blessOpts
             }).parse(contents, function(err, blessedFiles, numSelectors) {
                     if (err) {
                         return cb(new PluginError(pluginName,  err));
