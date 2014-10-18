@@ -72,10 +72,10 @@ If you can't create separate sourcemap files — such as if you are using ~v
 
 
 [npm-url]: https://npmjs.org/package/gulp-bless
-[npm-image]: https://badge.fury.io/js/gulp-bless.png
+[npm-image]: http://img.shields.io/npm/v/gulp-bless.svg?style=flat
 
 [travis-url]: http://travis-ci.org/adam-lynch/gulp-bless
 [travis-image]: http://img.shields.io/travis/adam-lynch/gulp-bless.svg?style=flat
 
 [depstat-url]: https://david-dm.org/adam-lynch/gulp-bless
-[depstat-image]: https://david-dm.org/adam-lynch/gulp-bless.png
+[depstat-image]: https://david-dm.org/adam-lynch/gulp-bless.svg?style=flat
