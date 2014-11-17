@@ -1,5 +1,9 @@
-gulp-bless [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
+gulp-bless 
 ==========
+
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Windows Build Status][appveyor-image]][appveyor-url] [![Dependency Status][depstat-image]][depstat-url] 
+
+---
 
 Gulp plugin which splits CSS files suitably for Internet Explorer &lt; 10.
 
@@ -76,6 +80,9 @@ If you can't create separate sourcemap files — such as if you are using ~v
 
 [travis-url]: http://travis-ci.org/adam-lynch/gulp-bless
 [travis-image]: http://img.shields.io/travis/adam-lynch/gulp-bless.svg?style=flat
+
+[appveyor-url]: https://ci.appveyor.com/project/adam-lynch/gulp-bless/branch/master
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/9hv1ts9fm2g8d6rj/branch/master?svg=true
 
 [depstat-url]: https://david-dm.org/adam-lynch/gulp-bless
 [depstat-image]: https://david-dm.org/adam-lynch/gulp-bless.svg?style=flat
