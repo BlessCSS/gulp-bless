@@ -1,7 +1,7 @@
 {
   "name": "gulp-bless",
   "version": "3.0.1",
-  "homepage": "http://github.com/adam-lynch/gulp-bless",
+  "homepage": "http://github.com/BlessCSS/gulp-bless",
   "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10. Bless + Gulp = gulp-bless.",
   "main": "./index.js",
   "dependencies": {
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/adam-lynch/gulp-bless.git"
+    "url": "git://github.com/BlessCSS/gulp-bless.git"
   },
   "keywords": [
     "gulpplugin",
@@ -36,7 +36,7 @@
   "author": "Adam Lynch <adam@teamwork.com>",
   "license": "MIT",
   "bugs": {
-    "url": "http://github.com/adam-lynch/gulp-bless/issues"
+    "url": "http://github.com/BlessCSS/gulp-bless/issues"
   },
   "engines": {
     "node": ">=0.9"
