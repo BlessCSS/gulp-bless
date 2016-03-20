@@ -66,11 +66,11 @@ Yes. This can be used with [gulp-sourcemaps](https://www.npmjs.com/package/gulp-
 [npm-url]: https://npmjs.org/package/gulp-bless
 [npm-image]: http://img.shields.io/npm/v/gulp-bless.svg?style=flat
 
-[travis-url]: http://travis-ci.org/adam-lynch/gulp-bless
-[travis-image]: http://img.shields.io/travis/adam-lynch/gulp-bless.svg?style=flat
+[travis-url]: http://travis-ci.org/BlessCSS/gulp-bless
+[travis-image]: http://img.shields.io/travis/BlessCSS/gulp-bless.svg?style=flat
 
-[appveyor-url]: https://ci.appveyor.com/project/adam-lynch/gulp-bless/branch/master
+[appveyor-url]: https://ci.appveyor.com/project/BlessCSS/gulp-bless/branch/master
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/9hv1ts9fm2g8d6rj/branch/master?svg=true
 
-[depstat-url]: https://david-dm.org/adam-lynch/gulp-bless
-[depstat-image]: https://david-dm.org/adam-lynch/gulp-bless.svg?style=flat
+[depstat-url]: https://david-dm.org/BlessCSS/gulp-bless
+[depstat-image]: https://david-dm.org/BlessCSS/gulp-bless.svg?style=flat
