@@ -1,21 +1,26 @@
 {
   "name": "gulp-bless",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "homepage": "http://github.com/BlessCSS/gulp-bless",
   "description": "CSS post-processor which splits CSS files suitably for Internet Explorer < 10. Bless + Gulp = gulp-bless.",
   "main": "./index.js",
   "dependencies": {
-    "bless": "~3.0.3",
+    "bless": "^4.0.0",
     "gulp-util": "*",
+    "merge": "~1.2.0",
     "through2": "~0.5.1",
-    "merge": "~1.2.0"
+    "vinyl-sourcemaps-apply": "^0.2.1"
   },
   "devDependencies": {
     "gulp": "*",
     "gulp-coverage": "~0.1.24",
+    "gulp-load-plugins": "^1.2.0",
     "gulp-mocha": "*",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "proxyquire": "~1.0.1",
     "should": "*",
-    "proxyquire": "~1.0.1"
+    "stream-assert": "^2.0.3"
   },
   "scripts": {
     "test": "gulp test"

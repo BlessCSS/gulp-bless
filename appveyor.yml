@@ -25,6 +25,7 @@ test_script:
   # Output useful info for debugging.
   - node --version
   - npm --version
+  - cmd: npm install es6-promise
   - cmd: npm test
 
 # Don't actually build.
