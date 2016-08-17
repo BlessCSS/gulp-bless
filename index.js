@@ -45,7 +45,7 @@ module.exports = function(options){
             if (options.log) {
                 // print log message
                 var msg = 'Found ' + result.totalSelectorCount + ' selector';
-                if (result.totalSelectorCount.length > 1) {
+                if (result.data.length > 1) {
                     msg += 's, splitting into ' + result.data.length + ' blessedFiles.';
                 } else {
                     msg += ', not splitting.';
