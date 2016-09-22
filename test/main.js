@@ -550,6 +550,34 @@ describe('gulp-bless', function() {
             stream.end();
         });
 
+         it("should log file splitted for large css", function(done){
+            var gulpBless = mockrequire('../index', {
+                'gulp-util': {
+                    log: function(text){
+                        text.should.equal('Found 4096 selectors, splitting into 2 blessedFiles.');
+                        done();
+                    }
+                }
+            });
+
+            var stream = gulpBless({
+                log: true
+            });
+            fs.readFile('./test/css/long.css', function(err, data){
+                if(err) throw new Error(err);
+
+                stream.write(new File({
+                    cwd: "/home/adam/",
+                    base: "/home/adam/test",
+                    path: "/home/adam/test/file.css",
+                    contents: new Buffer(data)
+                }));
+
+                stream.end();
+            });
+        });
+
+
 
         it("should not log using gulp-util when option isn't true", function(done) {
             var gulpBless = mockrequire('../index', {
