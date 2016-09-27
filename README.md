@@ -62,6 +62,10 @@ You should minify your CSS *after* it goes through gulp-bless. See [BlessCSS/ble
 Yes. This can be used with [gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps).
 
 
+# Team
+
+- Adam Lynch ([@adam-lynch](https://github.com/adam-lynch)) (Creator)
+
 
 [npm-url]: https://npmjs.org/package/gulp-bless
 [npm-image]: http://img.shields.io/npm/v/gulp-bless.svg?style=flat
