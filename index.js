@@ -1,5 +1,8 @@
 'use strict';
 
+var isString        = require("lodash.isstring");
+var isFunction      = require("lodash.isfunction");
+var isUndefined     = require("lodash.isundefined");
 var through         = require('through2');
 var path            = require('path');
 var bless           = require('bless');
@@ -9,12 +12,28 @@ var applySourcemap  = require('vinyl-sourcemaps-apply');
 
 var File = gutil.File;
 var PluginError = gutil.PluginError;
+var createSuffixFunctionFromString = function(configValue) {
+    var actualSuffix = configValue === undefined? "-blessed" : configValue;
+    return function(index) {
+        return actualSuffix + index;
+    }
+}
+var createSuffixFunction = function(configValue) {
+    if(isString(configValue) || isUndefined(configValue)) {
+        return createSuffixFunctionFromString(configValue);
+    } else if(isFunction(configValue)) {
+        return configValue;
+    } else {
+        throw new TypeError("suffix is neither a string nor function");
+    }
+}
 
 module.exports = function(options){
     var pluginName = 'gulp-bless';
     options = options || {};
     options.imports = options.imports === undefined ? true : options.imports;
     options.cacheBuster = options.cacheBuster === undefined ? true : options.cacheBuster;
+    options.suffix = createSuffixFunction(options.suffix);
 
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) return cb(null, file); // ignore
@@ -81,7 +100,7 @@ module.exports = function(options){
             var outputBasename = path.basename(outputFilePath, outputExtension);
 
             var createBlessedFileName = function(index){
-                return outputBasename + '-blessed' + index + outputExtension;
+                return outputBasename + options.suffix(index) + outputExtension;
             };
 
             var addImports = function(index, contents){

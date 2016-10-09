@@ -41,6 +41,30 @@ gulp.task('watch', function () {
 - `imports` - A boolean (which defaults to `true`). Determines whether or not the first chunk / "blessed" file `@import`s the others.
 - `cacheBuster` - A boolean (which defaults to `true`). If `imports` is `true`, this will add a random query parameter value to prevent against aggressive caching.
 - `log` - A boolean (which defaults to `false`). Logs a small bit of information about the process.
+- `suffix` - Either a string or a function (which defaults to `"-blessed"`). 
+    - If it is a string then it will be appended to the original file name before the index. E.g.
+    ```javascript
+      	//Assume you have long.css that is to be splitted into 3 parts, following code will 
+      	//produce 3 files: long.css, long-part1.css, long-part2.css    
+      	gulp.src('long.css')
+      	    .pipe(bless{
+      	 		suffix: '-part'
+      	    })
+      	    .pipe(gulp.dest('./'));
+
+    ```
+    - If it is a function then whatever returned by the function is appended to the original file name. The function takes in a 1-based index E.g.
+    ```javascript
+    	//Assume you have long.css that is to be splitted into 3 parts, following code will 
+      	//produce 3 files: long.css, long-functionpart1.css, long-functionpart2.css
+      	gulp.src('long.css')
+      	    .pipe(bless{
+      	 		suffix: function(index) {
+      	 			return "-functionpart" + index;
+      	 		}
+      	    })
+      	    .pipe(gulp.dest('./'));
+    ```
 
 Example:
 

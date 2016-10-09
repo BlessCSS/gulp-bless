@@ -7,6 +7,9 @@
   "dependencies": {
     "bless": "^4.0.0",
     "gulp-util": "*",
+    "lodash.isfunction": "^3.0.8",
+    "lodash.isstring": "^4.0.1",
+    "lodash.isundefined": "^3.0.1",
     "merge": "~1.2.0",
     "through2": "~0.5.1",
     "vinyl-sourcemaps-apply": "^0.2.1"

@@ -138,7 +138,112 @@ describe('gulp-bless', function() {
             });
         });
 
+        it('should use custom suffix if suffix option is set to a string', function(done){
+            var suffix = "-part"
+            var stream = bless({
+                suffix: suffix
+            });
 
+            fs.readFile('./test/css/long.css', function(err, data){
+                if(err) throw new Error(err); 
+
+                var longStylesheet = new File({
+                        cwd: "/home/adam/",
+                        base: "/home/adam/test",
+                        path: "/home/adam/test/long-split.css",
+                        contents: new Buffer(data)
+                });
+
+                var actualSplits = []
+                stream.on("data", function(newFile){
+                    actualSplits.push(newFile);
+                });
+
+                stream.on("end", function(){
+                    actualSplits.should.have.length(2);
+                    var masterPart, subPart;
+                    actualSplits.forEach(function(splittedFile){
+                        should.exist(splittedFile);
+                        should.exist(splittedFile.path);
+                        should.exist(splittedFile.relative);
+                        should.exist(splittedFile.contents);
+                        if (path.basename(splittedFile.path) === "long-split.css") {
+                            masterPart = splittedFile;
+                        } else {
+                            subPart = splittedFile;
+                        }
+                    });
+                    should.exist(masterPart);
+                    should.exist(subPart);
+                    path.basename(subPart.path).should.equal("long-split" + suffix + "1.css");
+                    var importRegex = "@import url\\('long-split" + suffix  + "1.css\\?z=[0-9]+'\\);";
+                    masterPart.contents.toString("utf8").should.match(new RegExp(importRegex));
+                    done();
+                });
+
+                stream.write(longStylesheet)  
+                stream.emit("end")             
+            });
+        });
+
+        it('should use custom suffix if suffix option is set to a function', function(done){
+            var suffix = "-functionpart";
+            var stream = bless({
+                suffix: function(index) {
+                    return suffix + "-" + index;
+                }
+            });
+
+            fs.readFile('./test/css/long.css', function(err, data){
+                if(err) throw new Error(err); 
+
+                var longStylesheet = new File({
+                        cwd: "/home/adam/",
+                        base: "/home/adam/test",
+                        path: "/home/adam/test/long-split.css",
+                        contents: new Buffer(data)
+                });
+
+                var actualSplits = []
+                stream.on("data", function(newFile){
+                    actualSplits.push(newFile);
+                });
+
+                stream.on("end", function(){
+                    actualSplits.should.have.length(2);
+                    var masterPart, subPart;
+                    actualSplits.forEach(function(splittedFile){
+                        should.exist(splittedFile);
+                        should.exist(splittedFile.path);
+                        should.exist(splittedFile.relative);
+                        should.exist(splittedFile.contents);
+                        if (path.basename(splittedFile.path) === "long-split.css") {
+                            masterPart = splittedFile;
+                        } else {
+                            subPart = splittedFile;
+                        }
+                    });
+                    should.exist(masterPart);
+                    should.exist(subPart);
+                    path.basename(subPart.path).should.equal("long-split" + suffix + "-1.css");
+                    var importRegex = "@import url\\('long-split" + suffix  + "-1.css\\?z=[0-9]+'\\);";
+                    masterPart.contents.toString("utf8").should.match(new RegExp(importRegex));
+                    done();
+                });
+
+                stream.write(longStylesheet)  
+                stream.emit("end")             
+            });
+        });
+
+        it('should throw error if suffix option is neither string nor function', function(done){ 
+
+            (function callBlessWithInvalidSuffix() {
+                gulp.src('./test/css/long.css')
+                    .pipe(bless({suffix:{}}))
+            }).should.throw(/.*suffix.*string.*function.*/);
+            done();
+        });
 
         it('should apply sourcemaps', function(done){
             var expectedSplits = [
