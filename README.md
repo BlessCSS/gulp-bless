@@ -9,13 +9,13 @@ Gulp plugin which splits CSS files suitably for Internet Explorer &lt; 10.
 
 This is the a [Gulp](http://github.com/gulpjs/gulp) wrapper around [bless.js](https://github.com/paulyoung/bless.js) (see [blesscss.com](http://blesscss.com/)).
 
-# Installation
+## Installation
 
 ```js
 npm install gulp-bless
 ```
 
-# Usage
+## Usage
 
 ```js
 var gulp = require('gulp');
@@ -35,7 +35,7 @@ gulp.task('watch', function () {
 });
 ```
 
-## bless(options).
+### bless(options).
 
 
 - `imports` - A boolean (which defaults to `true`). Determines whether or not the first chunk / "blessed" file `@import`s the others.
@@ -76,19 +76,20 @@ gulp.src('long.css')
         .pipe(gulp.dest('./'))
 ```
 
-## About minification
+### About minification
 
 You should minify your CSS *after* it goes through gulp-bless. See [BlessCSS/bless#90](https://github.com/BlessCSS/bless/issues/90) as to why.
 
 
-# Does this support sourcemaps?
+## Does this support sourcemaps?
 
 Yes. This can be used with [gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps).
 
 
-# Team
+## Team
 
 - Adam Lynch ([@adam-lynch](https://github.com/adam-lynch)) (Creator)
+- Alvin Lin ([@alvinlin123](https://github.com/alvinlin123))
 
 
 [npm-url]: https://npmjs.org/package/gulp-bless
