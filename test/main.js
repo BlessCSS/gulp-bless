@@ -1,6 +1,8 @@
 var mockrequire = require('proxyquire');
 
 var bless       = require('../');
+var concat      = require("gulp-concat");
+var cleanCss     = require('gulp-clean-css');
 var should      = require('should');
 var fs          = require('fs');
 var path        = require('path');
@@ -275,9 +277,9 @@ describe('gulp-bless', function() {
                         .should.equal(expectedSplits[0].contents.toString('utf8'));
 
                     result.sourceMap.sources.should.have.length(1);
-                    result.sourceMap.sources[0].should.equal('long-split.css');
+                    result.sourceMap.sources[0].should.match(/long-split\.css$/);
                     result.sourceMap.file.should.equal(path.basename(expectedSplits[0].path));
-                    result.sourceMap.mappings.mappings.should.equal(
+                    result.sourceMap.mappings.should.equal(
                         fs.readFileSync('./test/css/long-split.map').toString('utf8')
                     );
                 }))
@@ -286,10 +288,114 @@ describe('gulp-bless', function() {
                     result.contents.toString('utf8').should.equal(expectedSplits[1].contents.toString('utf8'));
 
                     result.sourceMap.sources.should.have.length(1);
-                    result.sourceMap.sources[0].should.equal('long-split.css');
+                    result.sourceMap.sources[0].should.match(/long-split\.css$/);
                     result.sourceMap.file.should.equal(path.basename(expectedSplits[1].path));
-                    result.sourceMap.mappings.mappings.should.equal(
+                    result.sourceMap.mappings.should.equal(
                         fs.readFileSync('./test/css/long-split-blessed1.map').toString('utf8')
+                    );
+                }))
+                .pipe(assert.end(done));
+        });
+
+        /* Issue 36 test */
+        it('should apply sourcemaps correctly for no split', function(done) {      
+            var testFileName = './test/css/small.css';
+            var concatName = 'small.contacted.css';
+            var mappingsDir = 'generated-sourcemaps';
+            gulp.src(testFileName)
+                .pipe($.sourcemaps.init())
+                .pipe(concat(concatName))
+                .pipe(bless())
+                .pipe(cleanCss({processImport: false}))
+                .pipe($.sourcemaps.write(mappingsDir))
+                .pipe(assert.length(2))
+                .pipe(assert.nth(0, function(result){
+                    result.relative.should.equal(path.join(mappingsDir, concatName) + '.map');
+                    var mappingData = JSON.parse(result.contents.toString('utf8'));
+                    mappingData.version.should.equal(3);
+                    mappingData.names.should.be.empty();
+                    mappingData.sources.should.deepEqual([concatName]);
+                    mappingData.mappings.should.equal('AAAA,OAAO,UAAA');
+                    mappingData.file.should.equal('../' + concatName);
+                    mappingData.sourcesContent.should.deepEqual(['.small{font-size: 10px}']);
+                }))
+                .pipe(assert.nth(1, function(result) {
+                    result.relative.should.equal(concatName);
+                    var minifiedCssRegex = '\\.small{font-size:10px}[^]+sourceMappingURL=' + mappingsDir + '/' + concatName + '\\.map[^]*';
+                    result.contents.toString('utf8').should.match(new RegExp(minifiedCssRegex));
+                }))
+                .pipe(assert.end(done));
+        });
+
+        it('should apply sourcemaps correctly when there already is a sourcemap', function(done){
+            var expectedSplits = [
+                new File({
+                    cwd: "/home/test/",
+                    base: "/home/test/css",
+                    path: "/home/test/css/long-split.css",
+                    contents: new Buffer(fs.readFileSync('./test/css/long-split-with-sourcemap-comment.css').toString('utf8'))
+                }),
+                new File({
+                    cwd: "/home/test/",
+                    base: "/home/test/css",
+                    path: "/home/test/css/long-split-blessed1.css",
+                    contents: new Buffer(fs.readFileSync('./test/css/long-split-blessed1-with-sourcemap-comment.css').toString('utf8'))
+                })
+            ];
+
+            //note that for each assert that reads large file, we will provide custom error message to speed up the test execution 
+            //shall there be any failure.
+            gulp.src('./test/css/long.css')
+                .pipe($.rename({
+                    suffix: '-split'
+                }))
+                .pipe($.sourcemaps.init())
+                .pipe(concat("long-split.css")) //concat will produce a source mapping
+                .pipe(bless())
+                .pipe($.sourcemaps.write('./generated-sourcemaps'))
+                .pipe(assert.length(4))
+                .pipe(assert.nth(0, function(result) {
+                    result.path.should.match(/long-split\.css\.map$/);
+                    var expectedValueFile = './test/css/long-split-with-pre-existing-sourcemap.map';
+                    result.contents.toString('utf8').should.equal(
+                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        "first split source map does not contain expected content as contained in " + expectedValueFile
+                    );
+                }))
+                .pipe(assert.nth(1, function(result) {
+                    path.relative('./', result.path).should.equal(path.relative('/home', expectedSplits[0].path));
+                    result.contents.toString('utf8')
+                        .replace(/\?z=[0-9]+'\)/g, "?z=xxx')")
+                        .should.equal(expectedSplits[0].contents.toString('utf8'));
+
+                    result.sourceMap.sources.should.have.length(1);
+                    result.sourceMap.sources[0].should.match(/long-split\.css$/);
+                    result.sourceMap.file.should.equal('../' + path.basename(expectedSplits[0].path));
+                    var expectedValueFile = './test/css/long-split.map';
+                    result.sourceMap.mappings.should.equal(
+                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        "first split does not contain correcing source map mapping as contained in " + expectedValueFile
+                    );
+                }))
+                .pipe(assert.nth(2, function(result) {
+                    result.path.should.match(/long-split-blessed1\.css\.map$/);
+                    var expectedValueFile = './test/css/long-split-blessed1-with-pre-existing-sourcemap.map';
+                    result.contents.toString('utf8').should.match(
+                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                         "second split source map does not contain expected content as contained in " + expectedValueFile
+                    );
+                }))
+                .pipe(assert.nth(3, function(result) {
+                    path.relative('./', result.path).should.equal(path.relative('/home', expectedSplits[1].path));
+                    result.contents.toString('utf8').should.equal(expectedSplits[1].contents.toString('utf8'));
+
+                    result.sourceMap.sources.should.have.length(1);
+                    result.sourceMap.sources[0].should.match(/long-split\.css$/);
+                    result.sourceMap.file.should.equal('../' + path.basename(expectedSplits[1].path));
+                    var expectedValueFile = './test/css/long-split-blessed1.map';
+                    result.sourceMap.mappings.should.equal(
+                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        "second split does not contain correcing source map mapping as contained in " + expectedValueFile
                     );
                 }))
                 .pipe(assert.end(done));

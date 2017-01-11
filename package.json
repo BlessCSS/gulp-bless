@@ -16,7 +16,10 @@
   },
   "devDependencies": {
     "gulp": "*",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-concat": "^2.6.1",
     "gulp-coverage": "~0.1.24",
+    "gulp-each": "^0.2.0",
     "gulp-load-plugins": "^1.2.0",
     "gulp-mocha": "*",
     "gulp-rename": "^1.2.2",

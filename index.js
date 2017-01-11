@@ -74,12 +74,12 @@ module.exports = function(options){
 
             var addSourcemap = function(fileToAddTo, blessOutputIndex) {
                 if(!shouldCreateSourcemaps) return fileToAddTo;
-                applySourcemap(fileToAddTo, {
-                    version: 3,
-                    file: fileToAddTo.relative,
-                    sources: [file.relative],
-                    mappings: result.maps[blessOutputIndex]
-                });
+
+                var map = result.maps[blessOutputIndex];
+                map.file = fileToAddTo.relative;
+                map.sources = [file.relative];
+                applySourcemap(fileToAddTo, map);
+
                 return fileToAddTo;
             };
 
@@ -91,7 +91,7 @@ module.exports = function(options){
                     base: file.base,
                     path: outputFilePath,
                     contents: new Buffer(result.data[0])
-                }, 0)));
+                }), 0));
             }
 
 
