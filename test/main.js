@@ -299,7 +299,8 @@ describe('gulp-bless', function() {
 
         /* Issue 36 test */
         it('should apply sourcemaps correctly for no split', function(done) {      
-            var testFileName = './test/css/small.css';
+            var testCssDir = 'test/css'; 
+            var testFileName = testCssDir + '/small.css';
             var concatName = 'small.contacted.css';
             var mappingsDir = 'generated-sourcemaps';
             gulp.src(testFileName)
@@ -314,7 +315,7 @@ describe('gulp-bless', function() {
                     var mappingData = JSON.parse(result.contents.toString('utf8'));
                     mappingData.version.should.equal(3);
                     mappingData.names.should.be.empty();
-                    mappingData.sources.should.deepEqual([concatName]);
+                    mappingData.sources.should.deepEqual(['/' + path.relative(process.cwd(), path.resolve(testCssDir, concatName))]);
                     mappingData.mappings.should.equal('AAAA,OAAO,UAAA');
                     mappingData.file.should.equal('../' + concatName);
                     mappingData.sourcesContent.should.deepEqual(['.small{font-size: 10px}']);
@@ -358,7 +359,7 @@ describe('gulp-bless', function() {
                     result.path.should.match(/long-split\.css\.map$/);
                     var expectedValueFile = './test/css/long-split-with-pre-existing-sourcemap.map';
                     result.contents.toString('utf8').should.equal(
-                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        fs.readFileSync(expectedValueFile).toString('utf8').trim(),
                         "first split source map does not contain expected content as contained in " + expectedValueFile
                     );
                 }))
@@ -373,7 +374,7 @@ describe('gulp-bless', function() {
                     result.sourceMap.file.should.equal('../' + path.basename(expectedSplits[0].path));
                     var expectedValueFile = './test/css/long-split.map';
                     result.sourceMap.mappings.should.equal(
-                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        fs.readFileSync(expectedValueFile).toString('utf8').trim(),
                         "first split does not contain correcing source map mapping as contained in " + expectedValueFile
                     );
                 }))
@@ -381,8 +382,8 @@ describe('gulp-bless', function() {
                     result.path.should.match(/long-split-blessed1\.css\.map$/);
                     var expectedValueFile = './test/css/long-split-blessed1-with-pre-existing-sourcemap.map';
                     result.contents.toString('utf8').should.match(
-                        fs.readFileSync(expectedValueFile).toString('utf8'),
-                         "second split source map does not contain expected content as contained in " + expectedValueFile
+                        fs.readFileSync(expectedValueFile).toString('utf8').trim(),
+                        "second split source map does not contain expected content as contained in " + expectedValueFile
                     );
                 }))
                 .pipe(assert.nth(3, function(result) {
@@ -394,7 +395,7 @@ describe('gulp-bless', function() {
                     result.sourceMap.file.should.equal('../' + path.basename(expectedSplits[1].path));
                     var expectedValueFile = './test/css/long-split-blessed1.map';
                     result.sourceMap.mappings.should.equal(
-                        fs.readFileSync(expectedValueFile).toString('utf8'),
+                        fs.readFileSync(expectedValueFile).toString('utf8').trim(),
                         "second split does not contain correcing source map mapping as contained in " + expectedValueFile
                     );
                 }))
