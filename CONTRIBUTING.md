@@ -1,6 +1,11 @@
+## Reporting issue
+* Do describe the steps to reproduce.
+* Do describe the expected and actual behaviour.
+* It will always help if you can provider a sample project that demonstrates the problem.
+
 ## Release process
 To perform the release you must have write access to this project and be added 
-as collaborator in [NPM for gulp-bles](https://www.npmjs.com/package/gulp-bless).
+as collaborator in [NPM for gulp-bless](https://www.npmjs.com/package/gulp-bless).
 
 1. Pull `master` branch and ensure you have latest changes.
 1. Run `npm test` to make sure all the tests are passing.
