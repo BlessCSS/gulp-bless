@@ -10,6 +10,8 @@ var gutil           = require('gulp-util');
 var merge           = require('merge');
 var applySourcemap  = require('vinyl-sourcemaps-apply');
 
+var Concat          = require('concat-with-sourcemaps');
+
 var File = gutil.File;
 var PluginError = gutil.PluginError;
 var createSuffixFunctionFromString = function(configValue) {
@@ -76,8 +78,13 @@ module.exports = function(options){
                 if(!shouldCreateSourcemaps) return fileToAddTo;
 
                 var map = result.maps[blessOutputIndex];
-                map.file = fileToAddTo.relative;
-                map.sources = [file.relative];
+                map.file = path.relative(fileToAddTo.base, fileToAddTo.path);
+                map.sources = [path.relative(file.base, file.path)];
+
+                //gotta assign fileToAddTo a source map so applyScourceMap can merge original
+                //and blessed sourcemap.
+                fileToAddTo.sourceMap = JSON.parse(JSON.stringify(file.sourceMap));
+
                 applySourcemap(fileToAddTo, map);
 
                 return fileToAddTo;
@@ -103,40 +110,58 @@ module.exports = function(options){
                 return outputBasename + options.suffix(index) + outputExtension;
             };
 
-            var addImports = function(index, contents){
-                // only the first file should have @imports
-                if(!options.imports || index){
-                  return contents;
-                }
-
-                var imports = '';
+            var addImports = function(aFile, fileNamesOfPartsToImport){
                 var parameters = options.cacheBuster ? '?z=' + Math.round((Math.random() * 999)) : '';
-                for (var i = 1; i < numberOfSplits; i++) {
-                    imports += "@import url('" + createBlessedFileName(i) + parameters + "');\n\n";
+                var filePath = path.relative(aFile.base, aFile.path);
+                var concat = new Concat(shouldCreateSourcemaps, filePath, '\n');
+                for (var i = 0; i < fileNamesOfPartsToImport.length; i++) {
+                    concat.add(null, "@import url('" + fileNamesOfPartsToImport[i] + parameters + "');\n");
                 }
 
-                return imports + contents;
+                concat.add(filePath, aFile.contents, JSON.stringify(aFile.sourceMap));
+
+                aFile.contents = concat.content;
+                if (shouldCreateSourcemaps) {
+                    aFile.sourceMap = JSON.parse(concat.sourceMap);
+                }
             };
 
-
             var outputFiles = [];
-            for(var j = numberOfSplits - 1; j >= 0; j--) {
-                var newIndex = numberOfSplits - 1 - j;
-                var outputPath = newIndex
-                    ? path.resolve(path.join(outputPathStart, createBlessedFileName(newIndex)))
-                    : outputFilePath;
+            var nonMasterPartFileNames = [];
+            for(var j = 0; j < numberOfSplits; j++) {
+                var oneBasedIndex = j + 1;
+                var isAtLastElement = oneBasedIndex === numberOfSplits;
 
-                outputFiles[newIndex] = addSourcemap(new File({
+                //last element is the "master" file (the one with @import).
+                var outputPath = isAtLastElement
+                    ? outputFilePath
+                    : path.resolve(path.join(outputPathStart, createBlessedFileName(oneBasedIndex)));
+
+                var outFile = addSourcemap(new File({
                     cwd: file.cwd,
                     base: file.base,
                     path: outputPath,
-                    contents: new Buffer(addImports(newIndex, result.data[j]))
+                    contents: new Buffer(result.data[j])
                 }), j);
+        
+                if (options.imports) {
+                    if (isAtLastElement) {
+                        addImports(outFile, nonMasterPartFileNames);
+                    } else {
+                        nonMasterPartFileNames.push(path.basename(outputPath)); 
+                    }
+                }
+
+                outputFiles[j] = outFile;
             }
 
-
+            //We want to stream the "master" file first then split part1, part2, part3 ... this is mainly to maintain backward
+            //compatibility; at least for the file emitting order ...
             for(var k = 0; k < numberOfSplits; k++){
-                stream.push(outputFiles[k]);
+                var fileToPush = k == 0
+                    ? outputFiles[numberOfSplits - 1]
+                    : outputFiles[k - 1];
+                stream.push(fileToPush);
             }
             cb()
         } else {
