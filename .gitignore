@@ -6,3 +6,4 @@ node_modules
 .coverdata
 debug
 coverage.html
+package-lock.json
