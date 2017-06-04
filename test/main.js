@@ -902,9 +902,9 @@ describe('gulp-bless', function() {
                     var secondPart = actualSplits[2];
                     var thirdPart = actualSplits[0]; //this should be the file with the original name.
 
-                    firstPart.path.should.endWith("/issue-25-test-blessed1.css");
-                    secondPart.path.should.endWith("/issue-25-test-blessed2.css");
-                    thirdPart.path.should.endWith("/issue-25-test.css");
+                    firstPart.path.should.endWith(path.sep + "issue-25-test-blessed1.css");
+                    secondPart.path.should.endWith(path.sep + "issue-25-test-blessed2.css");
+                    thirdPart.path.should.endWith(path.sep + "issue-25-test.css");
                     
                     var firstPartIndexes = extractIndexes(firstPart);
                     var secondPartIndexes = extractIndexes(secondPart);
