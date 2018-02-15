@@ -6,14 +6,14 @@ var isUndefined     = require("lodash.isundefined");
 var through         = require('through2');
 var path            = require('path');
 var bless           = require('bless');
-var gutil           = require('gulp-util');
+var PluginError     = require('plugin-error');
+var Vinyl           = require('vinyl');
+var fancyLog        = require('fancy-log');
 var merge           = require('merge');
 var applySourcemap  = require('vinyl-sourcemaps-apply');
 
 var Concat          = require('concat-with-sourcemaps');
 
-var File = gutil.File;
-var PluginError = gutil.PluginError;
 var createSuffixFunctionFromString = function(configValue) {
     var actualSuffix = configValue === undefined? "-blessed" : configValue;
     return function(index) {
@@ -71,7 +71,7 @@ module.exports = function(options){
                 } else {
                     msg += ', not splitting.';
                 }
-                gutil.log(msg);
+                fancyLog.info(msg);
             }
 
             var addSourcemap = function(fileToAddTo, blessOutputIndex) {
@@ -93,7 +93,7 @@ module.exports = function(options){
 
             // get out early if the file isn't long enough
             if(result.data.length === 1){
-                return cb(null, addSourcemap(new File({
+                return cb(null, addSourcemap(new Vinyl({
                     cwd: file.cwd,
                     base: file.base,
                     path: outputFilePath,
@@ -137,7 +137,7 @@ module.exports = function(options){
                     ? outputFilePath
                     : path.resolve(path.join(outputPathStart, createBlessedFileName(oneBasedIndex)));
 
-                var outFile = addSourcemap(new File({
+                var outFile = addSourcemap(new Vinyl({
                     cwd: file.cwd,
                     base: file.base,
                     path: outputPath,
