@@ -6,7 +6,7 @@ var cleanCss    = require('gulp-clean-css');
 var should      = require('should');
 var fs          = require('fs');
 var path        = require('path');
-var File        = require('gulp-util').File;
+var Vinyl       = require('vinyl');
 var Buffer      = require('buffer').Buffer;
 var assert      = require('stream-assert');
 var gulp        = require('gulp');
@@ -40,7 +40,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/file.css",
@@ -65,7 +65,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/empty.css",
@@ -81,7 +81,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err);
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -92,7 +92,7 @@ describe('gulp-bless', function() {
                 fs.readFile('./test/css/long-split.css', function(err, data){
                     if(err) throw new Error(err);
 
-                    expectedSplits.push(new File({
+                    expectedSplits.push(new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -102,7 +102,7 @@ describe('gulp-bless', function() {
                     fs.readFile('./test/css/long-split-blessed1.css', function(err, data){
                         if(err) throw new Error(err);
 
-                        expectedSplits.push(new File({
+                        expectedSplits.push(new Vinyl({
                             cwd: "/home/adam/",
                             base: "/home/adam/test",
                             path: "/home/adam/test/long-split-blessed1.css",
@@ -152,7 +152,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err); 
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -202,7 +202,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err); 
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -252,13 +252,13 @@ describe('gulp-bless', function() {
 
         it('should apply sourcemaps', function(done){
             var expectedSplits = [
-                new File({
+                new Vinyl({
                     cwd: "/home/test/",
                     base: "/home/test/css",
                     path: "/home/test/css/long-split.css",
                     contents: new Buffer(fs.readFileSync('./test/css/long-split.css').toString('utf8'))
                 }),
-                new File({
+                new Vinyl({
                     cwd: "/home/test/",
                     base: "/home/test/css",
                     path: "/home/test/css/long-split-blessed1.css",
@@ -356,13 +356,13 @@ describe('gulp-bless', function() {
             this.timeout(5000); //yea .. this test reads larger data so needs more time
 
             var expectedSplits = [
-                new File({
+                new Vinyl({
                     cwd: "/home/test/",
                     base: "/home/test/css",
                     path: "/home/test/css/long-split.css",
                     contents: new Buffer(fs.readFileSync('./test/css/long-split-with-sourcemap-comment.css').toString('utf8'))
                 }),
-                new File({
+                new Vinyl({
                     cwd: "/home/test/",
                     base: "/home/test/css",
                     path: "/home/test/css/long-split-blessed1.css",
@@ -452,7 +452,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err);
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -463,7 +463,7 @@ describe('gulp-bless', function() {
                 fs.readFile('./test/css/long-split--no-cache-buster.css', function(err, data){
                     if(err) throw new Error(err);
 
-                    expectedSplits.push(new File({
+                    expectedSplits.push(new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -473,7 +473,7 @@ describe('gulp-bless', function() {
                     fs.readFile('./test/css/long-split-blessed1.css', function(err, data){
                         if(err) throw new Error(err);
 
-                        expectedSplits.push(new File({
+                        expectedSplits.push(new Vinyl({
                             cwd: "/home/adam/",
                             base: "/home/adam/test",
                             path: "/home/adam/test/long-split-blessed1.css",
@@ -522,7 +522,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err);
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -533,7 +533,7 @@ describe('gulp-bless', function() {
                 fs.readFile('./test/css/long-split--no-imports.css', function(err, data){
                     if(err) throw new Error(err);
 
-                    expectedSplits.push(new File({
+                    expectedSplits.push(new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/long-split.css",
@@ -543,7 +543,7 @@ describe('gulp-bless', function() {
                     fs.readFile('./test/css/long-split-blessed1.css', function(err, data){
                         if(err) throw new Error(err);
 
-                        expectedSplits.push(new File({
+                        expectedSplits.push(new Vinyl({
                             cwd: "/home/adam/",
                             base: "/home/adam/test",
                             path: "/home/adam/test/long-split-blessed1.css",
@@ -587,14 +587,14 @@ describe('gulp-bless', function() {
         it('should return empty file if empty files are passed', function(done){
             var stream = bless();
 
-            var stylesheetA = new File({
+            var stylesheetA = new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/file.css",
                 contents: new Buffer("")
             });
 
-            var stylesheetB = new File({
+            var stylesheetB = new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/file.css",
@@ -635,7 +635,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 path: 'a',
                 base: 'a',
                 cwd: 'a',
@@ -660,7 +660,7 @@ describe('gulp-bless', function() {
                done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 path: 'style.css',
                 contents: new Buffer('p {color:red;}')
             }));
@@ -690,7 +690,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 base: '/test/',
                 cwd: '/test/a/',
                 path: '/test/a/style.xml',
@@ -722,7 +722,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 base: '/test/',
                 cwd: '/test/a/',
                 path: '/test/a/style',
@@ -737,14 +737,14 @@ describe('gulp-bless', function() {
             var numberOfFiles = 0;
             var numberOfErrrors = 0;
 
-            var fileA = new File({
+            var fileA = new Vinyl({
                 base: '/test/',
                 cwd: '/test/a/',
                 path: '/test/a/abc.css',
                 contents: new Buffer('p {\n  color: red;\n}')
             });
 
-            var fileB = new File({
+            var fileB = new Vinyl({
                 base: '/test/',
                 cwd: '/test/a/',
                 path: '/test/a/def.css',
@@ -779,10 +779,10 @@ describe('gulp-bless', function() {
         });
 
 
-        it("should log using gulp-util when option is enabled", function(done){
+        it("should log using fancy-log when option is enabled", function(done){
             var gulpBless = mockrequire('../index', {
-                'gulp-util': {
-                    log: function(text){
+                'fancy-log': {
+                    info: function(text){
                         text.should.equal('Found 1 selector, not splitting.');
                         done();
                     }
@@ -793,7 +793,7 @@ describe('gulp-bless', function() {
                 log: true
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/file.css",
@@ -805,8 +805,8 @@ describe('gulp-bless', function() {
 
          it("should log file splitted for large css", function(done){
             var gulpBless = mockrequire('../index', {
-                'gulp-util': {
-                    log: function(text){
+                'fancy-log': {
+                    info: function(text){
                         text.should.equal('Found 4096 selectors, splitting into 2 blessedFiles.');
                         done();
                     }
@@ -819,7 +819,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/long.css', function(err, data){
                 if(err) throw new Error(err);
 
-                stream.write(new File({
+                stream.write(new Vinyl({
                     cwd: "/home/adam/",
                     base: "/home/adam/test",
                     path: "/home/adam/test/file.css",
@@ -832,11 +832,11 @@ describe('gulp-bless', function() {
 
 
 
-        it("should not log using gulp-util when option isn't true", function(done) {
+        it("should not log using fancy-log when option isn't true", function(done) {
             var gulpBless = mockrequire('../index', {
-                'gulp-util': {
-                    log: function (text) {
-                        should.fail(null, null, "gulp-util.log shouldn't have been called");
+                'fancy-log': {
+                    info: function (text) {
+                        should.fail(null, null, "fancy-log shouldn't have been called");
                     }
                 }
             });
@@ -848,7 +848,7 @@ describe('gulp-bless', function() {
                 done();
             });
 
-            stream.write(new File({
+            stream.write(new Vinyl({
                 cwd: "/home/adam/",
                 base: "/home/adam/test",
                 path: "/home/adam/test/file.css",
@@ -864,7 +864,7 @@ describe('gulp-bless', function() {
             fs.readFile('./test/css/issue-25-test.css', function(err, data){
                 if(err) throw new Error(err);
 
-                var longStylesheet = new File({
+                var longStylesheet = new Vinyl({
                         cwd: "/home/adam/",
                         base: "/home/adam/test",
                         path: "/home/adam/test/issue-25-test.css",
