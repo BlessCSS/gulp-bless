@@ -9,3 +9,8 @@ coverage.html
 
 test
 .travis.yml
+
+appveyor.yml
+gulpfile.js
+CONTRIBUTING.md
+
